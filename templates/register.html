@@ -1,0 +1,586 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src="{{ url_for('static', filename='register.js') }}"></script>
+
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h2 class="display-6 fw-bold text-primary-custom mb-3">
+            <i class="fas fa-user-plus me-3"></i>
+            Register Hostelite
+        </h2>
+        <p class="text-white">Add new members to the hostel monitoring system</p>
+    </div>
+
+    <form id="registerForm" action="/register" method="POST" enctype="multipart/form-data">
+        <!-- Profile Picture and Personal Information in 2 Columns -->
+        <div class="row g-4 mb-4">
+            <!-- Left Column - Profile Picture -->
+            <div class="col-lg-4">
+                <div class="card border-0 bg-surface h-100">
+                    <div class="card-header bg-accent border-0">
+                        <h5 class="mb-0 fw-semibold text-white">
+                            <i class="fas fa-user-circle me-2"></i>
+                            Profile Picture
+                        </h5>
+                    </div>
+                    <div class="card-body text-center p-4 d-flex flex-column justify-content-center">
+                        <div class="profile-pic-container">
+                            <div class="profile-pic-wrapper" onclick="document.getElementById('profilePicInput').click();">
+                                <img id="profilePic" src="" alt="Profile Picture">
+                                <div class="profile-pic-overlay">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Choose Photo</span>
+                                </div>
+                            </div>
+                            <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" onchange="displayProfilePic(this)">
+                        </div>
+                        <p class="text-white small mt-3 mb-0">Click to upload profile picture</p>
+                        <small class="text-muted mt-1">Recommended: 300x300px</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Personal Information -->
+            <div class="col-lg-8">
+                <div class="card border-0 bg-surface h-100">
+                    <div class="card-header bg-accent border-0">
+                        <h5 class="mb-0 fw-semibold text-white">
+                            <i class="fas fa-user me-2"></i>
+                            Personal Information
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="role" class="form-label text-white fw-medium">
+                                    <i class="fas fa-users-cog me-2"></i>Role
+                                </label>
+                                <select name="role" id="userRole" class="form-select" onchange="generateUserID()" required>
+                                    <option value="">-- Select Role --</option>
+                                    <option value="hostelite">Hostelite</option>
+                                    <option value="warden">Warden</option>
+                                    <option value="support_staff">Support Staff</option>
+                                </select>
+                                <span id="roleError" class="error-text"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="generatedId" class="form-label text-white fw-medium">
+                                    <i class="fas fa-id-card me-2"></i>Generated ID
+                                </label>
+                                <input type="text" name="generated_id" id="generatedId" class="form-control" readonly required>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="name" class="form-label text-white fw-medium">
+                                    <i class="fas fa-user me-2"></i>Full Name
+                                </label>
+                                <input type="text" name="name" id="hosteliteName" class="form-control" required>
+                                <span id="nameError" class="error-text"></span>
+                            </div>
+
+                            <div class="col-6">
+                                <label for="age" class="form-label text-white fw-medium">
+                                    <i class="fas fa-calendar-alt me-2"></i>Age
+                                </label>
+                                <input type="number" name="age" id="age" class="form-control" required>
+                                <span id="ageError" class="error-text"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="contact" class="form-label text-white fw-medium">
+                                    <i class="fas fa-phone me-2"></i>Contact Number
+                                </label>
+                                <input type="text" name="contact" id="contact" class="form-control" required>
+                                <span id="contactError" class="error-text"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label text-white fw-medium">
+                                    <i class="fas fa-envelope me-2"></i>Email Address
+                                </label>
+                                <input type="email" name="email" id="email" class="form-control" required>
+                                <span id="emailError" class="error-text"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photo Capture Section -->
+        <div class="card border-0 bg-surface mb-4">
+            <div class="card-header bg-accent border-0">
+                <h5 class="mb-0 fw-semibold text-white">
+                    <i class="fas fa-camera me-2"></i>
+                    Photo Capture Method
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <label class="form-label text-white fw-medium mb-3">Choose Photo Method:</label>
+                        <div class="photo-method-selection">
+                            <div class="method-option">
+                                <input type="radio" name="photo_method" value="camera" id="camera-method" onchange="togglePhotoMethod()" required>
+                                <label for="camera-method" class="method-label">
+                                    <div class="method-icon bg-primary-custom bg-opacity-10">
+                                        <i class="fas fa-video text-primary-custom"></i>
+                                    </div>
+                                    <div class="method-content">
+                                        <h6 class="text-white mb-1">Use Webcam</h6>
+                                        <small class="text-white">Capture 20 photos using camera</small>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <div class="method-option">
+                                <input type="radio" name="photo_method" value="upload" id="upload-method" onchange="togglePhotoMethod()">
+                                <label for="upload-method" class="method-label">
+                                    <div class="method-icon bg-success bg-opacity-10">
+                                        <i class="fas fa-upload text-success"></i>
+                                    </div>
+                                    <div class="method-content">
+                                        <h6 class="text-white mb-1">Upload Photos</h6>
+                                        <small class="text-white">Upload minimum 20 photos</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camera Container -->
+        <div id="camera-container" class="photo-capture-section">
+            <div class="card border-0 bg-surface">
+                <div class="card-header bg-accent border-0">
+                    <h5 class="mb-0 fw-semibold text-white">
+                        <i class="fas fa-video me-2"></i>
+                        Live Camera Feed
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="camera-wrapper">
+                        <video id="video" autoplay class="camera-feed"></video>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                    </div>
+
+                    <div class="capture-controls mt-4">
+                        <div class="capture-info" id="captureInfo">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-white">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Captures remaining: <span id="remainingCount">20</span>
+                                </span>
+                                <span class="badge bg-primary">
+                                    <span id="capturedCount">0</span>/20
+                                </span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-custom">
+                                    <div class="progress-fill" id="progressFill"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button type="button" id="captureBtn" class="btn btn-primary btn-lg" onclick="capturePhoto()">
+                                <i class="fas fa-camera me-2"></i>
+                                Capture Photo (<span id="captureButtonCount">1</span>/20)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="preview-container mt-4" id="previewContainer">
+                        <h6 class="text-white mb-3">Captured Photos:</h6>
+                        <div class="preview-grid" id="previewGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Container -->
+        <div id="upload-container" class="photo-capture-section">
+            <div class="card border-0 bg-surface">
+                <div class="card-header bg-accent border-0">
+                    <h5 class="mb-0 fw-semibold text-white">
+                        <i class="fas fa-upload me-2"></i>
+                        Upload Photos
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="upload-zone">
+                        <div class="upload-area" onclick="document.getElementById('fileInput').click();">
+                            <i class="fas fa-cloud-upload-alt fs-1 text-primary-custom mb-3"></i>
+                            <h5 class="text-white mb-2">Drop files here or click to browse</h5>
+                            <p class="text-white mb-0">Upload minimum 20 photos (JPG, PNG)</p>
+                        </div>
+                        <input type="file" id="fileInput" name="images" multiple accept="image/*" style="display: none;">
+                    </div>
+
+                    <div class="capture-info mt-4" id="uploadInfo">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-white">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Photos uploaded: <span id="uploadCount">0</span>/20
+                            </span>
+                            <span class="badge bg-success">
+                                <span id="uploadedCount">0</span> files
+                            </span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill" id="uploadProgressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="uploadPreviewContainer" class="mt-4">
+                        <h6 class="text-white mb-3">Uploaded Photos:</h6>
+                        <div class="preview-grid" id="uploadPreviewGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <div class="d-flex gap-3 justify-content-center">
+                    <button type="button" id="resetBtn" class="btn btn-outline-light btn-lg" onclick="resetForm()">
+                        <i class="fas fa-undo me-2"></i>Reset Form
+                    </button>
+                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg" disabled>
+                        <i class="fas fa-save me-2"></i>Register Hostelite
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Profile Picture Styling */
+    .profile-pic-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .profile-pic-wrapper {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        border: 4px solid var(--primary-blue);
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--accent-bg);
+        margin: 0 auto;
+    }
+
+    .profile-pic-wrapper:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+    }
+
+    #profilePic {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+    }
+
+    .profile-pic-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(59, 130, 246, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .profile-pic-overlay i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-blue);
+    }
+
+    #profilePicInput {
+        display: none;
+    }
+
+    /* Photo Method Selection */
+    .photo-method-selection {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+    }
+
+    .method-option {
+        position: relative;
+    }
+
+    .method-option input[type="radio"] {
+        display: none;
+    }
+
+    .method-label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: var(--accent-bg);
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 200px;
+    }
+
+    .method-label:hover {
+        border-color: var(--primary-blue);
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .method-option input[type="radio"]:checked + .method-label {
+        border-color: var(--primary-blue);
+        background: rgba(59, 130, 246, 0.1);
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+    }
+
+    .method-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .method-content h6 {
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .method-content small {
+        opacity: 0.8;
+    }
+
+    /* Photo Capture Sections */
+    .photo-capture-section {
+        display: none;
+    }
+
+    .camera-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .camera-feed {
+        width: 100%;
+        max-width: 640px;
+        height: 480px;
+        border-radius: 12px;
+        border: 2px solid var(--border-color);
+        background: var(--accent-bg);
+    }
+
+    /* Upload Zone */
+    .upload-area {
+        border: 2px dashed var(--border-color);
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: var(--accent-bg);
+    }
+
+    .upload-area:hover {
+        border-color: var(--primary-blue);
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    /* Progress Bars */
+    .progress-container {
+        width: 100%;
+    }
+
+    .progress-bar-custom {
+        width: 100%;
+        height: 8px;
+        background: var(--accent-bg);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-blue), var(--primary-cyan));
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 4px;
+    }
+
+    /* Preview Grids */
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 1rem;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 1rem;
+        background: var(--accent-bg);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+
+    .preview-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .preview-item:hover {
+        transform: scale(1.05);
+        border-color: var(--primary-blue);
+    }
+
+    .preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .preview-item .remove-btn {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .preview-item:hover .remove-btn {
+        opacity: 1;
+    }
+
+    /* Error Text */
+    .error-text {
+        color: var(--danger-color);
+        font-size: 0.8rem;
+        display: block;
+        margin-top: 0.25rem;
+    }
+
+    /* Form Labels */
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-label i {
+        color: var(--primary-blue);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .photo-method-selection {
+            flex-direction: column;
+        }
+        
+        .method-label {
+            min-width: auto;
+        }
+        
+        .camera-feed {
+            height: 300px;
+        }
+        
+        .preview-grid {
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.5rem;
+        }
+
+        /* Stack profile and form vertically on mobile */
+        .row .col-lg-4,
+        .row .col-lg-8 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    /* Button Enhancements */
+    .btn-outline-light {
+        border-color: var(--border-color);
+        color: var(--text-primary);
+    }
+
+    .btn-outline-light:hover {
+        background: var(--accent-bg);
+        border-color: var(--primary-blue);
+        color: var(--text-primary);
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Card Enhancements */
+    .card-header {
+        padding: 1.25rem;
+    }
+
+    /* Capture Info Styling */
+    .capture-info {
+        background: var(--accent-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Hide sections initially */
+    #camera-container,
+    #upload-container {
+        display: none;
+    }
+
+    /* Show when active */
+    #camera-container.active,
+    #upload-container.active {
+        display: block;
+    }
+</style>
+{% endblock %}

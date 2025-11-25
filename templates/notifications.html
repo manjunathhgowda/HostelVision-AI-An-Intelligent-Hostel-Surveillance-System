@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    <h4 class="mb-4 text-danger">⚠️ Real-Time Notifications</h4>
+        <div class="row mb-3 align-items-end">
+            <div class="col-md-3">
+                <label for="filterDate">Date:</label>
+                <input type="date" id="filterDate" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="filterType">Type:</label>
+                <select id="filterType" class="form-control">
+                    <option value="">All</option>
+                    <option value="Visitor">Visitor</option>
+                    <option value="Zone Breach">Zone Breach</option>
+                </select>
+            </div>
+            <div class="col-md-6 d-flex justify-content-end">
+                <form method="post" action="/clear_notifications" onsubmit="return confirm('Are you sure you want to delete all notifications? This cannot be undone.');">
+                    <button type="submit" class="btn btn-danger">🗑️ Clear All Notifications</button>
+                </form>
+            </div>
+        </div>
+    
+
+    <!-- Alert Table -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered table-hover" id="alertsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Photo</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for alert in alerts %}
+                                <tr data-date="{{ alert.date }}" data-type="{{ alert.type }}">
+                                    <td>{{ alert.user_id or 'N/A' }}</td>
+                                    <td><img src="{{ alert.photo }}" alt="{{ alert.type }}" style="width: 100px;"></td>
+                                    <td>{{ alert.date }}</td>
+                                    <td>{{ alert.time }}</td>
+                                    <td>{{ alert.type }}</td>
+                                    <td>{{ alert.message }}</td>
+                                </tr>
+                            {% endfor %}
+                            {% if not alerts %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No alerts found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS Filter Logic -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterDate = document.getElementById('filterDate');
+        const filterType = document.getElementById('filterType');
+        const rows = document.querySelectorAll('#alertsTable tbody tr');
+
+        function applyFilter() {
+            const dateVal = filterDate.value;
+            const typeVal = filterType.value;
+
+            rows.forEach(row => {
+                const rowDate = row.getAttribute('data-date');
+                const rowType = row.getAttribute('data-type');
+
+                const matchDate = !dateVal || rowDate === dateVal;
+                const matchType = !typeVal || rowType === typeVal;
+
+                row.style.display = (matchDate && matchType) ? '' : 'none';
+            });
+        }
+
+        filterDate.addEventListener('input', applyFilter);
+        filterType.addEventListener('change', applyFilter);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,35 @@
+.hero {
+    background-image: url('/static/background.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 90vh;
+    padding-top: 100px;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+img {
+    border-radius: 8px;
+}
+
+#capturedImages img {
+    border: 1px solid #ccc;
+    padding: 3px;
+    background: white;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+h1, h2, h3 {
+    color: #212529;
+}
+
+form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}

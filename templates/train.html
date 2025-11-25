@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="train-container">
+    <h2>Train Hostelite</h2>
+    <div class="train-content">
+        {% if user.profile_pic %}
+        <img src="{{ user.profile_pic }}" alt="{{ user.name }}'s Profile" class="profile-pic">
+        {% else %}
+        <div class="no-image-placeholder">
+            <span>No Image</span>
+        </div>
+        {% endif %}
+        <h4 class="user-id">{{ user.user_id }}</h4>
+        <h5 class="user-name">{{ user.name }}</h5>
+        <button id="trainBtn" class="btn train-btn" data-user-id="{{ user.user_id }}">Train Hostelite</button>
+        <div id="trainStatus" class="train-status"></div>
+    </div>
+</div>
+
+<!-- CSS and JavaScript -->
+<link rel="stylesheet" href="/static/train.css">
+<script src="{{ url_for('static', filename='train.js') }}"></script>
+{% endblock %}

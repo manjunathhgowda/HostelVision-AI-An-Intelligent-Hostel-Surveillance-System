@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HostelVision-AI - Warden Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-cyan: #06b6d4;
+            --secondary-purple: #8b5cf6;
+            --accent-gold: #f59e0b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-primary: #ffffff;
+            --text-secondary: #e5e7eb;
+            --text-muted: #9ca3af;
+            --bg-primary: #0f172a;
+            --bg-secondary: rgba(15, 23, 42, 0.95);
+            --surface-bg: rgba(30, 41, 59, 0.8);
+            --accent-bg: rgba(51, 65, 85, 0.6);
+            --border-color: rgba(71, 85, 105, 0.3);
+            --glass-bg: rgba(15, 23, 42, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, 
+                #0f172a 0%, 
+                #1e293b 25%,
+                #334155 50%,
+                #1e293b 75%,
+                #0f172a 100%),
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 2rem;
+            left: 1rem;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 0.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-button:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Login Container */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-wrapper {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            min-height: 600px;
+        }
+
+        .login-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--primary-cyan));
+        }
+
+        /* Left Side - Method Selection */
+        .method-sidebar {
+            flex: 0 0 350px;
+            background: var(--surface-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Brand Section */
+        .brand-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-cyan));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+
+        .logo-icon i {
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .brand-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .brand-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        /* Method Selection */
+        .method-options {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .method-option {
+            background: var(--accent-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .method-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(6, 182, 212, 0.1));
+            transition: width 0.3s ease;
+        }
+
+        .method-option:hover::before {
+            width: 100%;
+        }
+
+        .method-option:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-blue);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
+        }
+
+        .method-option.active {
+            border-color: var(--primary-blue);
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+
+        .method-option.active::before {
+            width: 100%;
+        }
+
+        .method-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-cyan));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .method-option:hover .method-icon {
+            transform: scale(1.1);
+        }
+
+        .method-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .method-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        /* Right Side - Login Form */
+        .login-content {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .content-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .content-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .login-form {
+            display: none;
+        }
+
+        .login-form.active {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: var(--surface-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: #ffffff !important;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: var(--accent-bg);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Input Group */
+        .input-group {
+            position: relative;
+            color: white;
+        }
+
+        .input-group .form-control {
+            padding-left: 3rem;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            z-index: 2;
+        }
+
+        /* Camera Section */
+        .camera-section {
+            text-align: center;
+        }
+
+        .camera-container {
+            background: var(--surface-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .camera-container.active {
+            border-color: var(--primary-blue);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        #cameraVideo {
+            width: 100%;
+            max-width: 320px;
+            height: 240px;
+            border-radius: 12px;
+            background: var(--accent-bg);
+            object-fit: cover;
+        }
+
+        .camera-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 240px;
+            color: var(--text-muted);
+        }
+
+        .camera-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Buttons */
+        .btn-primary-custom {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-cyan));
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary-custom {
+            width: 100%;
+            background: var(--surface-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--accent-bg);
+            border-color: var(--primary-blue);
+            transform: translateY(-1px);
+        }
+
+        /* OTP Input */
+        .otp-container {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .otp-container.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .otp-inputs {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .otp-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: var(--surface-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-message.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .login-footer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .back-button {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .login-wrapper {
+                flex-direction: column;
+                max-width: 500px;
+                min-height: auto;
+            }
+            
+            .method-sidebar {
+                flex: none;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 2rem;
+            }
+            
+            .method-options {
+                flex-direction: row;
+                gap: 1rem;
+                overflow-x: auto;
+                padding-bottom: 1rem;
+            }
+            
+            .method-option {
+                flex: 0 0 200px;
+                padding: 1rem;
+            }
+
+            .method-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .login-content {
+                padding: 2rem;
+            }
+            
+            .content-title {
+                font-size: 1.5rem;
+            }
+            
+            .brand-title {
+                font-size: 1.5rem;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-icon i {
+                font-size: 2rem;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="/" class="back-button">
+        <i class="fas fa-arrow-left me-2"></i>
+        Back to Home
+    </a>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-wrapper fade-in-up">
+            <!-- Left Side - Method Selection -->
+            <div class="method-sidebar">
+                <!-- Brand Section -->
+                <div class="brand-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <h1 class="brand-title">HostelVision-AI</h1>
+                    <p class="brand-subtitle">Warden Access Panel</p>
+                </div>
+
+                <!-- Method Options -->
+                <div class="method-options">
+                    <div class="method-option active" onclick="switchMethod('facial')" data-method="facial">
+                        <div class="method-content">
+                            <div class="method-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h3 class="method-title">Facial Recognition</h3>
+                        </div>
+                    </div>
+
+                    <div class="method-option" onclick="switchMethod('credentials')" data-method="credentials">
+                        <div class="method-content">
+                            <div class="method-icon">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <h3 class="method-title">OTP Verification</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Login Form -->
+            <div class="login-content">
+                <div class="content-header">
+                    <h2 class="content-title" id="contentTitle">Facial Recognition Login</h2>
+                    <p class="content-subtitle" id="contentSubtitle">Position your face in the camera frame for secure authentication</p>
+                </div>
+
+                <!-- Status Messages -->
+                <div id="statusMessage" class="status-message"></div>
+
+                <!-- Facial Recognition Form -->
+                <form id="facialForm" class="login-form active">
+                    <div class="camera-section">
+                        <div class="camera-container" id="cameraContainer">
+                            <div class="camera-placeholder" id="cameraPlaceholder">
+                                <i class="fas fa-video"></i>
+                                <p>Click to start camera</p>
+                            </div>
+                            <video id="cameraVideo" style="display: none;" autoplay playsinline></video>
+                        </div>
+                        <button type="button" class="btn-secondary-custom" onclick="startCamera()">
+                            <i class="fas fa-camera me-2"></i>
+                            Start Camera
+                        </button>
+                        <button type="button" class="btn-primary-custom" onclick="captureFace()" disabled id="captureBtn">
+                            <i class="fas fa-user-check me-2"></i>
+                            Verify Face
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Credentials Form -->
+                <form id="credentialsForm" class="login-form">
+                    <div class="form-group">
+                        <label class="form-label">User ID</label>
+                        <div class="input-group">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" class="form-control" id="userId" placeholder="Enter User ID" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <div class="input-group">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" class="form-control" id="userEmail" placeholder="Enter Email Address" required>
+                            <!-- <div class="invalid-feedback">Please enter a valid email address</div> -->
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-primary-custom" onclick="sendOTP()">
+                        <i class="fas fa-paper-plane me-2"></i>
+                        Send OTP
+                    </button>
+
+                    <!-- OTP Container -->
+                    <div class="otp-container" id="otpContainer">
+                        <div class="form-group">
+                            <label class="form-label">Enter OTP</label>
+                            <div class="otp-inputs">
+                                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 0)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 1)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 2)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 3)">
+                                <!-- <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 4)">
+                                <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 5)"> -->
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-primary-custom" onclick="verifyOTP()">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Verify OTP
+                        </button>
+
+                        <button type="button" class="btn-secondary-custom" onclick="resendOTP()">
+                            <i class="fas fa-redo me-2"></i>
+                            Resend OTP
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Footer -->
+                <div class="login-footer">
+                    <p>&copy; 2025 HostelVision-AI. Secure Access Portal</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentStream = null;
+        let currentMethod = 'facial';
+
+        // Content data for different methods
+        const methodContent = {
+            facial: {
+                title: 'Facial Recognition Login',
+                subtitle: 'Position your face in the camera frame for secure authentication'
+            },
+            credentials: {
+                title: 'OTP Verification Login',
+                subtitle: 'Enter your User ID and Email to receive a secure verification code'
+            }
+        };
+
+        // Method Switching
+        function switchMethod(method) {
+            currentMethod = method;
+            
+            // Update method options
+            document.querySelectorAll('.method-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`[data-method="${method}"]`).classList.add('active');
+            
+            // Update content header
+            document.getElementById('contentTitle').textContent = methodContent[method].title;
+            document.getElementById('contentSubtitle').textContent = methodContent[method].subtitle;
+            
+            // Update forms
+            document.querySelectorAll('.login-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.getElementById(method === 'facial' ? 'facialForm' : 'credentialsForm').classList.add('active');
+            
+            // Stop camera if switching away from facial
+            if (method !== 'facial' && currentStream) {
+                stopCamera();
+            }
+            
+            // Clear status messages
+            hideStatus();
+        }
+
+        // Camera Functions
+        async function startCamera() {
+            try {
+                const video = document.getElementById('cameraVideo');
+                const placeholder = document.getElementById('cameraPlaceholder');
+                const container = document.getElementById('cameraContainer');
+                const captureBtn = document.getElementById('captureBtn');
+                
+                showStatus('Initializing camera...', 'warning');
+                
+                currentStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    } 
+                });
+                
+                video.srcObject = currentStream;
+                video.style.display = 'block';
+                placeholder.style.display = 'none';
+                container.classList.add('active');
+                captureBtn.disabled = false;
+                
+                showStatus('Camera ready! Position your face in the frame', 'success');
+                
+            } catch (error) {
+                console.error('Camera error:', error);
+                showStatus('Camera access denied or not available', 'error');
+            }
+        }
+
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+                
+                const video = document.getElementById('cameraVideo');
+                const placeholder = document.getElementById('cameraPlaceholder');
+                const container = document.getElementById('cameraContainer');
+                const captureBtn = document.getElementById('captureBtn');
+                
+                video.style.display = 'none';
+                placeholder.style.display = 'flex';
+                container.classList.remove('active');
+                captureBtn.disabled = true;
+            }
+        }
+
+        async function captureFace() {
+            try {
+                const video = document.getElementById('cameraVideo');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                ctx.drawImage(video, 0, 0);
+                
+                // Convert to blob
+                canvas.toBlob(async (blob) => {
+                    const formData = new FormData();
+                    formData.append('image', blob, 'face_capture.jpg');
+                    
+                    showStatus('Verifying your identity...', 'warning');
+                    
+                    try {
+                        const response = await fetch('/login', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.status === 'success') {
+                            showStatus(`Welcome ${result.name}! Redirecting...`, 'success');
+                            setTimeout(() => {
+                                window.location.href = '/home';
+                            }, 2000);
+                        } else {
+                            showStatus(result.message || 'Face verification failed', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Verification error:', error);
+                        showStatus('Network error. Please try again.', 'error');
+                    }
+                }, 'image/jpeg', 0.8);
+                
+            } catch (error) {
+                console.error('Capture error:', error);
+                showStatus('Failed to capture image', 'error');
+            }
+        }
+
+        function isValidEmail(email) {
+            // Simple email regex pattern
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+
+        // OTP Functions
+        async function sendOTP() {
+            const userId = document.getElementById('userId').value.trim();
+            const userEmail = document.getElementById('userEmail').value.trim();
+            
+            if (!userId || !userEmail) {
+                showStatus('Please enter both User ID and Email', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Validating credentials and sending OTP...', 'warning');
+                
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        user_id: userId,
+                        email: userEmail 
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showStatus('OTP sent successfully to your email!', 'success');
+                    document.getElementById('otpContainer').classList.add('show');
+                    document.querySelector('.otp-input').focus();
+                } else {
+                    showStatus(result.message || 'Failed to send OTP. Please check your credentials.', 'error');
+                }
+                
+            } catch (error) {
+                console.error('OTP send error:', error);
+                showStatus('Network error. Please try again.', 'error');
+            }
+        }
+
+        async function verifyOTP() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            const userId = document.getElementById('userId').value.trim();
+            const userEmail = document.getElementById('userEmail').value.trim();
+            
+            if (otp.length !== 4) {
+                showStatus('Please enter complete OTP', 'error');
+                return;
+            }
+            
+            try {
+                showStatus('Verifying OTP...', 'warning');
+                
+                const response = await fetch('/verify_otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        user_id: userId,
+                        email: userEmail,
+                        otp: otp 
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showStatus(`Welcome ${result.name}! Redirecting...`, 'success');
+                    setTimeout(() => {
+                        window.location.href = '/home';
+                    }, 2000);
+                } else {
+                    showStatus(result.message || 'OTP verification failed', 'error');
+                    // Clear OTP inputs on failure
+                    otpInputs.forEach(input => input.value = '');
+                    otpInputs[0].focus();
+                }
+                
+            } catch (error) {
+                console.error('OTP verify error:', error);
+                showStatus('Network error. Please try again.', 'error');
+            }
+        }
+
+        async function resendOTP() {
+            await sendOTP();
+        }
+
+        // OTP Input Navigation
+        function moveToNext(current, index) {
+            if (current.value.length === 1 && index < 3) {
+                document.querySelectorAll('.otp-input')[index + 1].focus();
+            }
+            
+            // Auto-verify if all fields are filled
+            const otpInputs = document.querySelectorAll('.otp-input');
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            if (otp.length === 4) {
+                setTimeout(verifyOTP, 500);
+            }
+        }
+
+        // Status Messages
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        function hideStatus() {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.style.display = 'none';
+        }
+
+        // Keyboard Navigation for OTP
+        document.addEventListener('keydown', function(e) {
+            if (e.target.classList.contains('otp-input')) {
+                if (e.key === 'Backspace' && e.target.value === '') {
+                    const inputs = document.querySelectorAll('.otp-input');
+                    const currentIndex = Array.from(inputs).indexOf(e.target);
+                    if (currentIndex > 0) {
+                        inputs[currentIndex - 1].focus();
+                    }
+                }
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide status message initially
+            hideStatus();
+
+            const emailInput = document.getElementById('userEmail');
+
+            emailInput.addEventListener('blur', function() {
+                const email = emailInput.value.trim();
+
+                if (email && !isValidEmail(email)) {
+                    showStatus('Please enter a valid email address', 'error');
+                    emailInput.classList.add('is-invalid');   // Bootstrap invalid style
+                } else {
+                    hideStatus();
+                    emailInput.classList.remove('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

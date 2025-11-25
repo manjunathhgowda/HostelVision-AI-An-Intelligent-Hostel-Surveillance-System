@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-danger">🚫 Unauthorized Visitor Logs</h2>
+    
+    <!-- Unauthorized Access Table -->
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Detected Image</th>
+                    <th>Date & Time</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if unauthorized_entries %}
+                    {% for entry in unauthorized_entries %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <img src="{{ entry.image_url }}" alt="Unauthorized Image" width="80" height="80" class="rounded shadow-sm">
+                            </td>
+                            <td>{{ entry.time }}</td>
+                            <td>{{ entry.location }}</td>
+                            <td>
+                                <span class="badge bg-danger">Unauthorized</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No unauthorized activity detected yet.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

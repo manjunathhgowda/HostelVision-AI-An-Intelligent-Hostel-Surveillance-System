@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <video id="testVideo" autoplay muted></video>
+    <button onclick="startCamera()">Start Camera</button>
+    <div id="status"></div>
+    <script>
+        function startCamera() {
+            const video = document.getElementById('testVideo');
+            const status = document.getElementById('status');
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                status.innerText = 'Camera not supported';
+                return;
+            }
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.play();
+                    status.innerText = 'Camera started';
+                })
+                .catch(err => {
+                    status.innerText = `Error: ${err.name} - ${err.message}`;
+                });
+        }
+    </script>
+</body>
+</html>

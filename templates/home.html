@@ -1,0 +1,621 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Professional Welcome Section -->
+<div class="container mt-4">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary-custom mb-3">
+            <i class="fas fa-microchip me-3"></i>
+            An Intelligent Hostel Surveillance System
+        </h1>
+        <p class="fs-5 text-white">
+             <span class="tech-accent">Warden Panel</span> | Real-time Monitoring Dashboard
+        </p>
+        <div class="d-flex justify-content-center align-items-center mt-3">
+            <span class="badge bg-success me-2">
+                <i class="fas fa-circle status-online me-1"></i>
+                System Online
+            </span>
+            <span class="badge bg-info">
+                <i class="fas fa-shield-alt me-1"></i>
+                Security Active
+            </span>
+        </div>
+    </div>
+
+    <!-- Professional Summary Cards -->
+    <div class="row g-4 mb-5">
+        <!-- Total Hostelites -->
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-surface">
+                <div class="card-body text-center p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="bg-success bg-opacity-10 rounded-3 p-3">
+                            <i class="fas fa-users text-success fs-3"></i>
+                        </div>
+                        <span class="badge bg-success bg-opacity-20 text-white">Updated</span>
+                    </div>
+                    <h3 class="fw-bold text-primary-custom mb-1">{{ total_hostelites }}</h3>
+                    <p class="text-white mb-0 small">Total Hostelites</p>
+                    <div class="progress mt-2" style="height: 4px;">
+                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Attendance -->
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-surface">
+                <div class="card-body text-center p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="bg-info bg-opacity-10 rounded-3 p-3">
+                            <i class="fas fa-calendar-check text-info fs-3"></i>
+                        </div>
+                        <span class="badge bg-info bg-opacity-20 text-info text-white">
+                            {% if total_hostelites > 0 %}
+                                {{ ((today_attendance / total_hostelites) * 100) | round(1) }}%
+                            {% else %}
+                                0%
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <h3 class="fw-bold text-cyan-custom mb-1">
+                        {{ today_attendance }}/{{ total_hostelites }}
+                    </h3>
+
+                    <p class="text-white mb-0 small">Today's Attendance</p>
+
+                    <div class="progress mt-2" style="height: 4px;">
+                        <div class="progress-bar bg-info"
+                            style="width: {% if total_hostelites > 0 %}{{ ((today_attendance / total_hostelites) * 100) | round(0) }}{% else %}0{% endif %}%;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Unauthorized Visits -->
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-surface">
+                <div class="card-body text-center p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="bg-danger bg-opacity-10 rounded-3 p-3">
+                            <i class="fas fa-exclamation-triangle text-danger fs-3"></i>
+                        </div>
+                        <span class="badge bg-danger bg-opacity-20 text-danger text-white">
+                            {% if unauthorized_visits > 0 %}Alert{% else %}Clear{% endif %}
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-danger mb-1">{{ unauthorized_visits }}</h3>
+                    <p class="text-white mb-0 small">Unauthorized Visits</p>
+                    <div class="progress mt-2" style="height: 4px;">
+                        <div class="progress-bar bg-danger" style="width: {% if unauthorized_visits > 0 %}75{% else %}0{% endif %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geo-Fence Alerts -->
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-surface">
+                <div class="card-body text-center p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="bg-warning bg-opacity-10 rounded-3 p-3">
+                            <i class="fas fa-map-marker-alt text-warning fs-3"></i>
+                        </div>
+                        <span class="badge bg-warning bg-opacity-20 text-warning text-white">
+                            {% if geo_fence_alerts > 0 %}Active{% else %}Inactive{% endif %}
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-warning mb-1">{{ geo_fence_alerts }}</h3>
+                    <p class="text-white mb-0 small">Zone Violation Alerts</p>
+                    <div class="progress mt-2" style="height: 4px;">
+                        <div class="progress-bar bg-warning" style="width: {% if geo_fence_alerts > 0 %}60{% else %}0{% endif %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Alerts and Date Widget -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="card h-100 border-0 bg-surface">
+                <div class="card-header bg-accent border-0 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-bell text-warning me-2"></i>
+                        <h5 class="mb-0 fw-semibold">Recent System Alerts</h5>
+                    </div>
+                    <span class="badge bg-primary">Live</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush" style="max-height: 350px; overflow-y: auto;">
+                        {% for alert in recent_alerts %}
+                        <div class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-circle text-warning me-2" style="font-size: 0.5rem;"></i>
+                                    <span class="fw-medium">{{ alert.message }}</span>
+                                </div>
+                                <small class="text-white">{{ alert.date }} {{ alert.time }}</small>
+                            </div>
+                            <span class="badge bg-warning bg-opacity-20 rounded-pill" style="color: black;">New</span>
+                        </div>
+                        {% endfor %}
+                        {% if not recent_alerts %}
+                        <div class="list-group-item text-center py-4">
+                            <i class="fas fa-check-circle text-success fs-2 mb-2"></i>
+                            <p class="text-white mb-0">No recent alerts. System running smoothly.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Date & Time Widget -->
+        <div class="col-lg-4">
+            <div class="card h-100 border-0 bg-surface">
+                <div class="card-header bg-accent border-0 d-flex align-items-center">
+                    <i class="fas fa-clock text-primary-custom me-2"></i>
+                    <h5 class="mb-0 fw-semibold">System Time</h5>
+                </div>
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <div class="mb-4">
+                        <h2 id="clock" class="fw-bold text-primary-custom mb-2" style="font-family: 'JetBrains Mono', monospace; font-size: 2.2rem;"></h2>
+                        <h5 id="date" class="text-white mb-0"></h5>
+                    </div>
+                    <div class="d-flex justify-content-around text-center">
+                        <div>
+                            <div class="text-info fw-bold">24/7</div>
+                            <small class="text-white">Monitoring</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Services Section -->
+    <div class="services-section mb-5" id="services-section">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-primary-custom mb-3">
+                <i class="fas fa-cogs me-2"></i>
+                System Services
+            </h2>
+            <p class="text-white">Advanced AI-powered monitoring and security solutions</p>
+        </div>
+        
+        <div class="services-grid">
+            <div class="service-card" onclick="redirectTo('/attendance')">
+                <div class="service-header">
+                    <div class="service-icon bg-primary bg-opacity-10">
+                        <i class="fa-solid fa-camera text-primary-custom"></i>
+                    </div>
+                    <span class="service-status badge bg-success">Active</span>
+                </div>
+                <h4 class="service-title">Smart Attendance</h4>
+                <p class="service-description" style="text-align: justify;">
+                    Advanced facial recognition system with automated reporting and real-time attendance tracking for efficient hostel management.</p>
+            </div>
+
+            <div class="service-card" onclick="redirectTo('/intrusion-monitor')">
+                <div class="service-header">
+                    <div class="service-icon bg-danger bg-opacity-10">
+                        <i class="fas fa-shield-alt text-danger"></i>
+                    </div>
+                    <span class="service-status badge bg-success">Active</span>
+                </div>
+                <h4 class="service-title">Intrusion Monitor</h4>
+                <p class="service-description" style="text-align: justify;">
+                AI-powered security monitoring system that detects unauthorized access and potential security threats with instant alerting.
+                </p>
+            </div>
+
+            <div class="service-card" onclick="redirectTo('/geo-fence-monitor')">
+                <div class="service-header">
+                    <div class="service-icon bg-warning bg-opacity-10">
+                        <i class="fas fa-map-marked-alt text-warning"></i>
+                    </div>
+                    <span class="service-status badge bg-success">Active</span>
+                </div>
+                <h4 class="service-title">Zone Violation Tracker</h4>
+                <p class="service-description" style="text-align: justify;">
+                    Zone breach technology to monitor restricted areas and track violations with instant notification system and detailed reporting.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Camera Feed Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 bg-surface">
+                <div class="card-header bg-accent border-0 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-video text-primary-custom me-2"></i>
+                        <h5 class="mb-0 fw-semibold">Live Camera Feed</h5>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-success">
+                            <i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
+                            Live
+                        </span>
+                        <span class="badge bg-info">HD Quality</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-4">
+            <div class="camera-card">
+                <div class="camera-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="fas fa-video me-2"></i>
+                            Camera 1 - Entrance
+                        </h6>
+                        <span class="camera-status offline">
+                            <i class="fas fa-circle"></i>
+                            Offline
+                        </span>
+                    </div>
+                </div>
+                <div class="camera-body">
+                    <video width="100%" height="240" muted
+                        style="background: linear-gradient(135deg, var(--accent-bg), var(--surface-bg)), url('/static/media/no-cam.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 8px;">
+                    </video>
+                    <div class="camera-overlay">
+                        <i class="fas fa-video-slash fs-1 text-muted"></i>
+                        <p class="text-white mt-2 mb-0">Camera Offline</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="camera-card active">
+                <div class="camera-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="fas fa-video me-2"></i>
+                            Camera 2 - Main Hall
+                        </h6>
+                        <span class="camera-status online">
+                            <i class="fas fa-circle"></i>
+                            Live
+                        </span>
+                    </div>
+                </div>
+                <div class="camera-body">
+                    <video id="liveCamera" width="100%" height="240" autoplay playsinline style="border-radius: 8px;"></video>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="camera-card">
+                <div class="camera-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-semibold">
+                            <i class="fas fa-video me-2"></i>
+                            Camera 3 - Corridor
+                        </h6>
+                        <span class="camera-status offline">
+                            <i class="fas fa-circle"></i>
+                            Offline
+                        </span>
+                    </div>
+                </div>
+                <div class="camera-body">
+                    <video width="100%" height="240" muted
+                        style="background: linear-gradient(135deg, var(--accent-bg), var(--surface-bg)), url('/static/media/no-cam.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; border-radius: 8px;">
+                    </video>
+                    <div class="camera-overlay">
+                        <i class="fas fa-video-slash fs-1 text-muted"></i>
+                        <p class="text-muted mt-2 mb-0">Camera Offline</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Professional Scripts -->
+<script>
+    // Enhanced clock functionality
+    function updateClock() {
+        const now = new Date();
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        document.getElementById('date').innerText = now.toLocaleDateString('en-US', options);
+        document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { 
+            hour12: false,
+            timeZone: 'Asia/Kolkata'
+        });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Enhanced webcam stream
+    const video = document.getElementById('liveCamera');
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+            } 
+        })
+        .then(function(stream) {
+            video.srcObject = stream;
+        })
+        .catch(function(error) {
+            console.log('Camera access denied or not available');
+            video.style.display = 'none';
+            const cameraBody = video.parentElement;
+            cameraBody.innerHTML = `
+                <div class="camera-placeholder d-flex flex-column justify-content-center align-items-center" style="height: 240px; background: var(--accent-bg); border-radius: 8px;">
+                    <i class="fas fa-video-slash fs-1 text-muted mb-2"></i>
+                    <p class="text-white mb-0">Camera Access Denied</p>
+                </div>
+            `;
+        });
+    }
+
+    // Service navigation
+    function redirectTo(url) {
+        window.location.href = url;
+    }
+
+    // Enhanced service card interactions
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Status updates simulation
+    function updateSystemStatus() {
+        const statusElements = document.querySelectorAll('.camera-status');
+        // This would typically fetch real status from your backend
+        statusElements.forEach(status => {
+            if (Math.random() > 0.8) {
+                // Simulate occasional status changes
+                status.classList.toggle('online');
+                status.classList.toggle('offline');
+            }
+        });
+    }
+    
+    // Update status every 30 seconds
+    setInterval(updateSystemStatus, 30000);
+</script>
+
+<style>
+    /* Professional Services Section */
+    .services-section {
+        margin-top: 2rem;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .service-card {
+        background: var(--secondary-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary-blue), var(--primary-cyan));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .service-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .service-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .service-icon i {
+        font-size: 1.8rem;
+    }
+
+    .service-status {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+    }
+
+    .service-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .service-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-stats {
+        display: none;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        display: block;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--primary-blue);
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Professional Camera Cards */
+    .camera-card {
+        background: var(--secondary-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .camera-card.active {
+        border-color: var(--primary-blue);
+        box-shadow: 0 4px 24px rgba(59, 130, 246, 0.2);
+    }
+
+    .camera-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .camera-header {
+        padding: 1.25rem;
+        background: var(--accent-bg);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .camera-body {
+        padding: 1.25rem;
+        position: relative;
+    }
+
+    .camera-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 2;
+    }
+
+    .camera-controls {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .camera-card:hover .camera-controls {
+        opacity: 1;
+    }
+
+    .camera-status {
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .camera-status.online {
+        color: var(--success-color);
+    }
+
+    .camera-status.offline {
+        color: var(--text-muted);
+    }
+
+    .camera-status i {
+        font-size: 0.5rem;
+        animation: pulse 2s infinite;
+    }
+
+    .camera-status.online i {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .services-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        .service-card {
+            padding: 1.5rem;
+        }
+        
+        .service-stats {
+            gap: 1rem;
+        }
+        
+        .camera-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+{% endblock %}
