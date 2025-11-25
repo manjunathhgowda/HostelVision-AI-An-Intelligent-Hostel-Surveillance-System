@@ -1,6 +1,9 @@
+
+# Project Title
+
 # 📌 HostelVision-AI: An Intelligent Hostel Surveillance System
 
-HostelVision-AI is a **real-time facial recognition surveillance system** designed for hostels to automate **attendance, visitor monitoring, geo-fence violation alerts, and security notifications**.  
+HostelVision-AI is a **real-time facial recognition surveillance system** designed for hostels to automate **attendance, visitor monitoring, Zone violation alerts, and security notifications**.  
 Using **MTCNN for face detection** and **FaceNet 512-D embeddings for recognition**, the system provides fast, accurate, and contactless identification.
 
 ---
@@ -10,7 +13,7 @@ Using **MTCNN for face detection** and **FaceNet 512-D embeddings for recognitio
 - 🕵️ Unknown visitor detection and image capture
 - 🔔 Push notifications through Pushover API
 - 🔐 Email-based OTP authentication for the warden
-- 📍 Geo-fence violation alert system
+- 📍 Zone violation alert system
 - 📊 Live analytics dashboard
 - ⚡ High-performance embedding-based matching (FaceNet)
 
@@ -30,25 +33,25 @@ Using **MTCNN for face detection** and **FaceNet 512-D embeddings for recognitio
 ---
 
 ## 📂 Project Structure
-
+```text
 HostelVision-AI/
 │ app.py → Main backend application
 │ hostel.db → SQLite database
 │ requirements.txt → Dependencies
 │ README.md → Documentation
-├─ dataset/ → Training images (each folder = one student)
+├─ dataset/ → Training images 
 ├─ embeddings/ → Stored embedding (.pkl) files
 ├─ static/
 │ ├─ media/ → Temporary snapshots
-│ ├─ profile_pic/ → Student profile photos
+│ ├─ profile_pic/ → Hostel members profile photos
 │ ├─ visitor_photos/ → Unknown visitor images
-│ ├─ geo_fence_boundary.pkl → Geo-fence trained model
+│ ├─ geo_fence_boundary.pkl → Polygon boudary setup
 │ ├─ css / js → UI resources
 ├─ templates/ → HTML pages
 └─ venv/ → Virtual environment (local)
 
+```
 ---
-
 ## 🖥 System Requirements
 - Python **3.8 – 3.11**
 - Webcam / CCTV camera
@@ -59,7 +62,7 @@ HostelVision-AI/
 
 ## 📌 Installation & Setup
 
-### 1️⃣ Create Virtual Environment (optional)
+### 1️⃣ Create Virtual Environment
 ```sh
 python -m venv venv
 
@@ -68,64 +71,62 @@ venv\Scripts\activate
 
 Linux/Mac:
 source venv/bin/activate
-
+```
 ### 2️⃣ Install Dependencies
+```sh
 pip install -r requirements.txt
-
-### 3️⃣ Run the Application
+```
+## 3️⃣ Run the Application
+```sh
 python app.py
-
+```
 Open the dashboard in browser:
 http://127.0.0.1:5000
 
-## 🔧 Manual Configuration (Important)
-#### ✔ Pushover Alert Setup
+#### 🔧 Manual Configuration (Important)
+**✔ Pushover Alert Setup**
 
 Inside app.py:
+
 PUSHOVER_USER_KEY = "YOUR_USER_KEY"
 PUSHOVER_API_TOKEN = "YOUR_API_TOKEN"
-Keys available at: https://pushover.net
 
-#### ✔ Email OTP Setup
+Keys available at:
+https://pushover.net
+
+**✔ Email OTP Setup**
 
 Inside app.py:
+
 sender = "your_email@gmail.com"
-password = "your_generated_app_password"
+password="your_generated_app_password"
+
 ⚠ Gmail users must generate a Google App Password (not normal password).
 
 ## 🧠 System Workflow
 
-Admin registers a student with multiple face images
+- Admin registers a student with multiple face images
+- FaceNet generates embeddings and stores them
+- During monitoring:
 
-FaceNet generates embeddings and stores them
-
-During monitoring:
-
-MTCNN detects face
-
-FaceNet compares embeddings
-
-If match → attendance is recorded
-
-If unknown → visitor image stored + Pushover alert sent
-
-If restricted area violation → geo-fence alert triggered
+        MTCNN detects face
+        FaceNet compares embeddings
+        If match → attendance is recorded
+        If unknown → visitor image stored + Pushover alert sent
+        If restricted area violation → geo-fence alert triggered
 
 ## 🔮 Future Enhancements
 
-Face anti-spoofing (prevent image attack)
-
-Multi-camera monitoring
-
-Cloud database + mobile app integration
-
-Voice alert announcements inside hostel corridors
+- Face anti-spoofing (prevent image attack)
+- Multi-camera monitoring
+- Cloud database + mobile app integration
+- Voice alert announcements inside hostel corridors
 
 ## 👨‍💻 Developer
 
-Name: Manjunatha H B
-Project: HostelVision-AI – An Intelligent Hostel Surveillance System
-Domain: AI • Computer Vision • Web Technologies
+**Name:** Manjunatha H B
+
+**Project:** HostelVision-AI – An Intelligent Hostel Surveillance System
 
 ## 📜 License
 
